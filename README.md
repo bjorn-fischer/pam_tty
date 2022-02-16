@@ -26,3 +26,16 @@ session		include		system-login
 session		optional	pam_tty.so
 [bf@βελλεροφων:~/src]$
 ```
+
+### Tips for starting rootless Xorg
+
+After logging in at the virtual console, you probably want to start Xorg with
+the options ```-keeptty``` and ```vtN``` where **N** is the number of your
+virtual console:
+```
+startx -- -keeptty vt`tty | sed 's/.*tty//'`
+```
+or
+```
+xinit -- -keeptty vt`tty | sed 's/.*tty//'`
+```
