@@ -35,7 +35,7 @@ virtual console:
 ```
 startx -- -keeptty vt`tty | sed 's/.*tty//'`
 ```
-or
+or, if you do not want Xauthority handled by startx:
 ```
 xinit -- -keeptty vt`tty | sed 's/.*tty//'`
 ```
