@@ -19,13 +19,46 @@ Copy the ```pam_tty.so``` to the directory with the other PAM modules, e.g. ```/
 Most systems have a dedicated PAM stack for local logins. Just add it to the end as a **session** module. The only supported option is _debug_, just in case.
 ```
 [bf@βελλεροφων:~/src]$ cat /etc/pam.d/system-local-login 
-auth		include		system-login
-account		include		system-login
-password	include		system-login
-session		include		system-login
-session		optional	pam_tty.so
+auth      include   system-login
+account   include   system-login
+password  include   system-login
+session   include   system-login
+session   optional  pam_tty.so
 [bf@βελλεροφων:~/src]$
 ```
+
+### What about Unix group **input**?
+
+Good point. You definitely do **not** want to give every user unlimited access
+to the Unix group **input**. Every user would have full control over all input
+devices at any time (think of keyloggers or worse). The **logind** way of
+solving this problem is to let logind open the devices for you based on some
+policy (via dbus).
+
+There are two options out of this. Either stay away from **libinput** and setup
+your X11 input devices the old way. This also involves granting additional
+privileges, probably. Or you limit access to group **input** to users who
+are logged in on a virtual console TTY. There is even a pam module for this
+already: **pam_group(8)**. You can set it up like pam_tty.so in your PAM
+stack for local logins:
+```
+auth      include   system-login
+account   include   system-login
+password  include   system-login
+session   include   system-login
+auth      optional  pam_group.so
+session   optional  pam_tty.so
+```
+You also need to set up the config file for pam_group.so:
+```
+#
+# /etc/security/group.conf -- config for pam_group.so
+#
+login;tty*;*;Al0000-2400;input,audio,video
+```
+This way you also can manage other sensitive groups. Keep in mind that one
+could log onto the console, and while being in the input group start some
+processes, which do not necessariliy need to terminate on logout.
 
 ### Tips for starting rootless Xorg
 
