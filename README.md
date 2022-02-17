@@ -27,7 +27,7 @@ session   optional  pam_tty.so
 [bf@βελλεροφων:~/src]$
 ```
 
-### What about Unix group **input**?
+### What about Unix group _input_?
 
 Good point. You definitely do **not** want to give every user unlimited access
 to the Unix group **input**. Every user would have full control over all input
