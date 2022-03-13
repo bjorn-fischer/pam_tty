@@ -2,6 +2,9 @@
 _Always a good idea: Replacing code with less code._
 ### What the module does
 **chown(2)** ```/dev/ttyN``` on successful console login as a significantly less complex alternative to **systemd-logind(8)** or **elogind(8)**
+
+This is needed on Linux systems that do _not_ use **login(1)** from [**util-linux**](https://git.kernel.org/pub/scm/utils/util-linux/util-linux.git) for console login.
+
 ### Rationale: Rootless X without complex seat managers
 Everyone wants to run the xserver **Xorg(1)** as a normal user, i.e. without the suid bit set on the executable. But not everyone wants to deploy a full-featured seat manager aka login manager like **elogind(8)** or even **systemd-logind(8)** just for this. Fortunately most privileges needed for rootless X can be granted via Unix groups (_video, kvm, input,_ see below!). Except for the virtual console TTY devices ```/dev/ttyN```. One way to get around this would be putting the user into group _tty_ and configure the acting udev daemon to use ```rw-rw----``` for the virtual console TTYs, but this could be just too much security dealt for simplicity.
 
